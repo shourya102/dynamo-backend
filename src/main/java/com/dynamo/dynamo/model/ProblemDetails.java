@@ -31,7 +31,7 @@ public class ProblemDetails {
     @NotBlank
     private Type returnType;
 
-    @OneToMany
+    @OneToMany(mappedBy = "problemDetails", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Parameter> parameters;
 
     @OneToOne
@@ -39,8 +39,10 @@ public class ProblemDetails {
     @JoinColumn(name = "id")
     private Problem problem;
 
-    public ProblemDetails(String description) {
+    public ProblemDetails(String description, String methodName, Type returnType) {
         this.description = description;
+        this.methodName = methodName;
+        this.returnType = returnType;
     }
 }
 

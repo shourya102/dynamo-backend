@@ -22,7 +22,10 @@ public class ProblemController {
         return problemService.saveProblem(problemRequest.getName(),
                 problemRequest.getDifficulty(),
                 problemRequest.getProblemDescription(),
+                problemRequest.getReturnType(),
+                problemRequest.getMethodName(),
+                problemRequest.getParameterNames(),
+                problemRequest.getParameterTypes(),
                 problemRequest.getTopics());
     }
-
 }

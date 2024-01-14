@@ -24,7 +24,6 @@ public class CCodeGenerator implements CodeGenerator {
     public String typeToLangEquivalent(Type rawType) {
         String type;
         switch (rawType) {
-            case INTEGER -> type = "int";
             case DOUBLE -> type = "double";
             case FLOAT -> type = "float";
             case CHAR -> type = "char";

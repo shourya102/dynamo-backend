@@ -6,5 +6,11 @@ public enum Type {
     DOUBLE,
     CHAR,
     STRING,
-    LONG
+    LONG;
+
+    public static boolean contains(String name) {
+        for (Type type : values())
+            if (type.name().equalsIgnoreCase(name)) return true;
+        return false;
+    }
 }
