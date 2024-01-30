@@ -6,8 +6,8 @@ import com.dynamo.dynamo.payload.response.MessageResponse;
 import com.dynamo.dynamo.repository.ProblemDetailsRepository;
 import com.dynamo.dynamo.repository.ProblemRepository;
 import com.dynamo.dynamo.repository.TopicRepository;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,8 @@ import java.util.Set;
 
 @Service
 public class ProblemService {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     ProblemRepository problemRepository;
@@ -38,15 +40,16 @@ public class ProblemService {
         Problem problem = new Problem(name,
                 Difficulty.valueOf(difficulty),
                 0, 0, 0, 0);
-        String cleaned = Jsoup.clean(problemDescription, Safelist.basic());
-        if (!Type.contains(returnType))
+//        String cleaned = Jsoup.clean(problemDescription, Safelist.basic());
+        if (!EType.contains(returnType))
             throw new EnumNotFoundException();
-        ProblemDetails details = new ProblemDetails(cleaned, methodName, Type.valueOf(returnType));
+        ProblemDetails details = new ProblemDetails(problemDescription, methodName, EType.valueOf(returnType));
         details.setProblem(problem);
         List<Parameter> parameterList = new ArrayList<>();
         for (int i = 0; i < parameterNames.size(); i++) {
             Parameter parameter = new Parameter(parameterNames.get(i),
-                    Type.valueOf(parameterTypes.get(i)));
+                    EType.valueOf(parameterTypes.get(i)));
+            parameter.setProblemDetails(details);
             parameterList.add(parameter);
         }
         details.setParameters(parameterList);

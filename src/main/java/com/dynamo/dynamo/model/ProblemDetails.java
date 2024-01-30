@@ -28,8 +28,9 @@ public class ProblemDetails {
     @NotBlank
     private String methodName;
 
+    @Enumerated(EnumType.STRING)
     @NotBlank
-    private Type returnType;
+    private EType returnType;
 
     @OneToMany(mappedBy = "problemDetails", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Parameter> parameters;
@@ -39,7 +40,7 @@ public class ProblemDetails {
     @JoinColumn(name = "id")
     private Problem problem;
 
-    public ProblemDetails(String description, String methodName, Type returnType) {
+    public ProblemDetails(String description, String methodName, EType returnType) {
         this.description = description;
         this.methodName = methodName;
         this.returnType = returnType;

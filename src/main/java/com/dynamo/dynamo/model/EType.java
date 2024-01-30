@@ -1,6 +1,6 @@
 package com.dynamo.dynamo.model;
 
-public enum Type {
+public enum EType {
     INTEGER,
     FLOAT,
     DOUBLE,
@@ -9,7 +9,7 @@ public enum Type {
     LONG;
 
     public static boolean contains(String name) {
-        for (Type type : values())
+        for (EType type : values())
             if (type.name().equalsIgnoreCase(name)) return true;
         return false;
     }

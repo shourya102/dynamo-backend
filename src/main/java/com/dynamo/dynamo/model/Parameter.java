@@ -1,9 +1,7 @@
 package com.dynamo.dynamo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,15 +13,21 @@ import lombok.Setter;
 public class Parameter {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank
     private String name;
-    private Type type;
+
+    @Enumerated(EnumType.STRING)
+    @NotBlank
+    private EType type;
 
     @ManyToOne
     @JoinColumn(name = "problem_id", nullable = false)
     private ProblemDetails problemDetails;
 
-    public Parameter(String name, Type type) {
+    public Parameter(String name, EType type) {
         this.name = name;
         this.type = type;
     }

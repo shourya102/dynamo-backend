@@ -1,7 +1,7 @@
 package com.dynamo.dynamo.utils;
 
+import com.dynamo.dynamo.model.EType;
 import com.dynamo.dynamo.model.ProblemDetails;
-import com.dynamo.dynamo.model.Type;
 
 public class JavaCodeGenerator implements CodeGenerator {
     @Override
@@ -10,7 +10,7 @@ public class JavaCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public String typeToLangEquivalent(Type rawType) {
+    public String typeToLangEquivalent(EType rawType) {
         return null;
     }
 }
