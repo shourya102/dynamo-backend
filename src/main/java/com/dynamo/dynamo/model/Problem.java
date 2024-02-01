@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "problems")
 public class Problem {
 
@@ -52,6 +54,8 @@ public class Problem {
     )
     private Set<Topic> topic;
 
+    @OneToOne()
+    private Solution solution;
 
     public Problem(String name, Difficulty difficulty, Integer numberOfAttempts, Integer successfulAttempts, Integer likes, Integer dislikes) {
         this.name = name;
