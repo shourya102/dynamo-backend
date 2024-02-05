@@ -1,7 +1,7 @@
 package com.dynamo.dynamo.services;
 
 import com.dynamo.dynamo.exceptions.EnumNotFoundException;
-import com.dynamo.dynamo.model.*;
+import com.dynamo.dynamo.model.problem.*;
 import com.dynamo.dynamo.payload.response.MessageResponse;
 import com.dynamo.dynamo.repository.ProblemDetailsRepository;
 import com.dynamo.dynamo.repository.ProblemRepository;
@@ -38,8 +38,7 @@ public class ProblemService {
         if (!Difficulty.contains(difficulty))
             throw new EnumNotFoundException();
         Problem problem = new Problem(name,
-                Difficulty.valueOf(difficulty),
-                0, 0, 0, 0);
+                Difficulty.valueOf(difficulty));
 //        String cleaned = Jsoup.clean(problemDescription, Safelist.basic());
         if (!EType.contains(returnType))
             throw new EnumNotFoundException();

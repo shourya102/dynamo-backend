@@ -1,6 +1,6 @@
 package com.dynamo.dynamo.security.services;
 
-import com.dynamo.dynamo.model.User;
+import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

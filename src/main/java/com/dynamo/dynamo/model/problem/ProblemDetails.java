@@ -1,4 +1,4 @@
-package com.dynamo.dynamo.model;
+package com.dynamo.dynamo.model.problem;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

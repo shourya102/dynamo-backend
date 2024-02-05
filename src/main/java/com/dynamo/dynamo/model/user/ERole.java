@@ -1,4 +1,4 @@
-package com.dynamo.dynamo.model;
+package com.dynamo.dynamo.model.user;
 
 public enum ERole {
     ROLE_USER,

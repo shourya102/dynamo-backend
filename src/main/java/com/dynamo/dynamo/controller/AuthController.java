@@ -1,10 +1,11 @@
 package com.dynamo.dynamo.controller;
 
 import com.dynamo.dynamo.exceptions.TokenRefreshException;
-import com.dynamo.dynamo.model.ERole;
-import com.dynamo.dynamo.model.RefreshToken;
-import com.dynamo.dynamo.model.Role;
-import com.dynamo.dynamo.model.User;
+import com.dynamo.dynamo.model.auth.RefreshToken;
+import com.dynamo.dynamo.model.auth.VerificationToken;
+import com.dynamo.dynamo.model.user.ERole;
+import com.dynamo.dynamo.model.user.Role;
+import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.payload.request.LoginRequest;
 import com.dynamo.dynamo.payload.request.SignUpRequest;
 import com.dynamo.dynamo.payload.request.TokenRefreshRequest;
@@ -16,8 +17,9 @@ import com.dynamo.dynamo.repository.UserRepository;
 import com.dynamo.dynamo.security.jwt.JwtUtils;
 import com.dynamo.dynamo.security.services.RefreshTokenService;
 import com.dynamo.dynamo.security.services.UserDetailsImpl;
+import com.dynamo.dynamo.services.EmailService;
+import com.dynamo.dynamo.services.VerificationService;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.XSlf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @CrossOrigin(value = "*", maxAge = 3600)
@@ -39,25 +42,23 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/auth")
 public class AuthController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     @Autowired
     AuthenticationManager authenticationManager;
-
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     RoleRepository roleRepository;
-
     @Autowired
     PasswordEncoder passwordEncoder;
-
     @Autowired
     JwtUtils jwtUtils;
-
     @Autowired
     RefreshTokenService refreshTokenService;
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    @Autowired
+    EmailService emailService;
+    @Autowired
+    VerificationService verificationService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -90,7 +91,7 @@ public class AuthController {
                         "Refresh token is not in database!"));
     }
 
-    @PostMapping("signout/{id}")
+    @PostMapping("/signout/{id}")
     public ResponseEntity<?> signOut(@PathVariable Long id) {
         return ResponseEntity.ok().body(refreshTokenService.deleteByUserId(id));
     }
@@ -103,6 +104,10 @@ public class AuthController {
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Email is already in use"));
+        }
+
+        if(!emailService.validateEmail(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("No such email exists"));
         }
 
         User user = new User(signUpRequest.getEmail(),
@@ -136,7 +141,15 @@ public class AuthController {
         }
         user.setRoles(roles);
         userRepository.save(user);
+        VerificationToken token = verificationService.createVerification(user);
 
+        emailService.sendMail("Verify Account", user.getEmail(),
+                String.format("Here is your verification token: %s", token.getToken()));
         return ResponseEntity.ok(new MessageResponse("User is registered successfully"));
+    }
+
+    @PostMapping("/verify/{token}")
+    public ResponseEntity<?> verifyEmail(@PathVariable String token) {
+        return verificationService.verifyUser(token);
     }
 }

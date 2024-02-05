@@ -1,11 +1,10 @@
-package com.dynamo.dynamo.model;
+package com.dynamo.dynamo.model.problem;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -13,7 +12,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @Table(name = "problems")
 public class Problem {
 
@@ -53,12 +51,19 @@ public class Problem {
     private Set<Topic> topic;
 
 
-    public Problem(String name, Difficulty difficulty, Integer numberOfAttempts, Integer successfulAttempts, Integer likes, Integer dislikes) {
+    public Problem() {
+        this.numberOfAttempts = 0;
+        this.successfulAttempts = 0;
+        this.likes = 0;
+        this.dislikes = 0;
+    }
+
+    public Problem(String name, Difficulty difficulty) {
         this.name = name;
         this.difficulty = difficulty;
-        this.numberOfAttempts = numberOfAttempts;
-        this.successfulAttempts = successfulAttempts;
-        this.likes = likes;
-        this.dislikes = dislikes;
+        this.numberOfAttempts = 0;
+        this.successfulAttempts = 0;
+        this.likes = 0;
+        this.dislikes = 0;
     }
 }
