@@ -1,4 +1,4 @@
-package com.dynamo.dynamo.repository;
+package com.dynamo.dynamo.repository.auth;
 
 import com.dynamo.dynamo.model.auth.VerificationToken;
 import com.dynamo.dynamo.model.user.User;

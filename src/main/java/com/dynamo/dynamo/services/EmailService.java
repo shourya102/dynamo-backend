@@ -28,8 +28,7 @@ public class EmailService {
             internetAddress.setAddress(email);
             internetAddress.validate();
             return true;
-        }
-        catch (AddressException e) {
+        } catch (AddressException e) {
             return false;
         }
     }

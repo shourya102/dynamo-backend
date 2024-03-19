@@ -3,9 +3,9 @@ package com.dynamo.dynamo.services;
 import com.dynamo.dynamo.exceptions.EnumNotFoundException;
 import com.dynamo.dynamo.model.problem.*;
 import com.dynamo.dynamo.payload.response.MessageResponse;
-import com.dynamo.dynamo.repository.ProblemDetailsRepository;
-import com.dynamo.dynamo.repository.ProblemRepository;
-import com.dynamo.dynamo.repository.TopicRepository;
+import com.dynamo.dynamo.repository.problem.ProblemDetailsRepository;
+import com.dynamo.dynamo.repository.problem.ProblemRepository;
+import com.dynamo.dynamo.repository.problem.TopicRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +33,7 @@ public class ProblemService {
 
     public ResponseEntity<?> saveProblem(String name, String difficulty, String problemDescription, String returnType,
                                          String methodName, List<String> parameterNames, List<String> parameterTypes, Set<String> topics) {
+
         if (problemRepository.existsByName(name))
             return ResponseEntity.badRequest().body(new MessageResponse("Name is already taken"));
         if (!Difficulty.contains(difficulty))

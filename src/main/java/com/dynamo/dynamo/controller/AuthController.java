@@ -13,7 +13,7 @@ import com.dynamo.dynamo.payload.response.JwtResponse;
 import com.dynamo.dynamo.payload.response.MessageResponse;
 import com.dynamo.dynamo.payload.response.TokenRefreshResponse;
 import com.dynamo.dynamo.repository.RoleRepository;
-import com.dynamo.dynamo.repository.UserRepository;
+import com.dynamo.dynamo.repository.user.UserRepository;
 import com.dynamo.dynamo.security.jwt.JwtUtils;
 import com.dynamo.dynamo.security.services.RefreshTokenService;
 import com.dynamo.dynamo.security.services.UserDetailsImpl;
@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @CrossOrigin(value = "*", maxAge = 3600)
@@ -106,7 +105,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Email is already in use"));
         }
 
-        if(!emailService.validateEmail(signUpRequest.getEmail())) {
+        if (!emailService.validateEmail(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("No such email exists"));
         }
 

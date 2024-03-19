@@ -3,14 +3,12 @@ package com.dynamo.dynamo.services;
 import com.dynamo.dynamo.model.auth.VerificationToken;
 import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.payload.response.MessageResponse;
-import com.dynamo.dynamo.repository.UserRepository;
-import com.dynamo.dynamo.repository.VerificationTokenRepository;
+import com.dynamo.dynamo.repository.user.UserRepository;
+import com.dynamo.dynamo.repository.auth.VerificationTokenRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
