@@ -1,7 +1,7 @@
 package com.dynamo.dynamo.utils;
 
+import com.dynamo.dynamo.model.EType;
 import com.dynamo.dynamo.model.ProblemDetails;
-import com.dynamo.dynamo.model.Type;
 
 public class CCodeGenerator implements CodeGenerator {
     @Override
@@ -21,7 +21,7 @@ public class CCodeGenerator implements CodeGenerator {
         return code.toString();
     }
 
-    public String typeToLangEquivalent(Type rawType) {
+    public String typeToLangEquivalent(EType rawType) {
         String type;
         switch (rawType) {
             case DOUBLE -> type = "double";

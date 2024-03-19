@@ -26,7 +26,8 @@ public class Solution {
     private String optimalCode;
 
     private Long likes ;
-
+    @OneToOne
+    private Problem problem;
     @OneToMany()
     private List<Comment> commentList ;
 

@@ -8,20 +8,18 @@ import java.util.List;
 
 public interface SolutionService {
 
-//    Solution saveSolution(Solution solution);
-//
-////    void addCommentToSolution(Long solution_id , Comment comment , Long user_id);
-//void addCommentToSolution(Long solution_id , Comment comment );
-//
-//
 
-//    List<Solution> getAllSolution();
     Solution getSolutionById(Long id);
 
-    Problem addSolution(Solution solution , Integer problem_id);
-    Solution addCommentToSolution(Comment comment , Long solution_id , Long user_id);
+    String addSolution(Solution solution , Long problem_id);
+    String addCommentToSolution(Comment comment , Long solution_id , Long user_id);
 
     Long increaseSolutionLike(Long solution_id);
     Long increaseCommentLike(Long comment_id);
     List<Solution> getAllSolution();
+
+    String  toggleLikeOnSolution(Long solution_id , Long user_id);
+    Boolean  checkLikeOnSolutionByUser(Long solution_id , Long user_id);
+    String  toggleLikeOnComment(Long comment_id , Long user_id);
+    Boolean  checkLikeOnCommentByUser(Long comment_id , Long user_id);
 }

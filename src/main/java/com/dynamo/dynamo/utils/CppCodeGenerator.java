@@ -1,7 +1,7 @@
 package com.dynamo.dynamo.utils;
 
+import com.dynamo.dynamo.model.EType;
 import com.dynamo.dynamo.model.ProblemDetails;
-import com.dynamo.dynamo.model.Type;
 
 import java.util.StringJoiner;
 
@@ -36,7 +36,7 @@ public class CppCodeGenerator implements CodeGenerator {
     }
 
     @Override
-    public String typeToLangEquivalent(Type rawType) {
+    public String typeToLangEquivalent(EType rawType) {
         switch (rawType) {
             case DOUBLE:
                 return "double";

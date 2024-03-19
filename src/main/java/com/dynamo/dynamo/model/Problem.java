@@ -54,7 +54,7 @@ public class Problem {
     )
     private Set<Topic> topic;
 
-    @OneToOne()
+    @OneToOne(mappedBy = "problem")
     private Solution solution;
 
     public Problem(String name, Difficulty difficulty, Integer numberOfAttempts, Integer successfulAttempts, Integer likes, Integer dislikes) {

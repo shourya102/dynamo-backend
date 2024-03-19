@@ -1,17 +1,25 @@
 package com.dynamo.dynamo.controller;
 
+import com.dynamo.dynamo.exceptions.TokenRefreshException;
 import com.dynamo.dynamo.model.ERole;
+import com.dynamo.dynamo.model.RefreshToken;
 import com.dynamo.dynamo.model.Role;
 import com.dynamo.dynamo.model.User;
 import com.dynamo.dynamo.payload.request.LoginRequest;
 import com.dynamo.dynamo.payload.request.SignUpRequest;
+import com.dynamo.dynamo.payload.request.TokenRefreshRequest;
 import com.dynamo.dynamo.payload.response.JwtResponse;
 import com.dynamo.dynamo.payload.response.MessageResponse;
+import com.dynamo.dynamo.payload.response.TokenRefreshResponse;
 import com.dynamo.dynamo.repository.RoleRepository;
 import com.dynamo.dynamo.repository.UserRepository;
 import com.dynamo.dynamo.security.jwt.JwtUtils;
+import com.dynamo.dynamo.security.services.RefreshTokenService;
 import com.dynamo.dynamo.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.XSlf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -46,18 +54,45 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    RefreshTokenService refreshTokenService;
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        String jwt = jwtUtils.generateJwtToken((UserDetailsImpl) authentication.getPrincipal());
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
                 .collect(Collectors.toList());
+        refreshTokenService.deleteByUserId(userDetails.getId());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(),
+        return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(), userDetails.getUsername(),
                 userDetails.getEmail(), roles));
+    }
+
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                        "Refresh token is not in database!"));
+    }
+
+    @PostMapping("signout/{id}")
+    public ResponseEntity<?> signOut(@PathVariable Long id) {
+        return ResponseEntity.ok().body(refreshTokenService.deleteByUserId(id));
     }
 
     @PostMapping("/signup")

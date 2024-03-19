@@ -15,35 +15,8 @@ import java.util.List;
 public class SolutionController {
     @Autowired
     SolutionService solutionService;
-//
-//    @PostMapping("/savesolution")
-//    public ResponseEntity<String> insertSolutionWithOutComment(@RequestBody Solution solution){
-////        solution.setComments(null);
-//        Solution savedSolution = solutionService.saveSolution(solution);
-//        return ResponseEntity.ok("Solution are inserted by Id :-" +savedSolution.getId());
-//    }
-//
-////    @PostMapping("/{solution_id}/insertcomment/{user_id}")
-////    public ResponseEntity<String> addCommentToSolution(@PathVariable("solution_id") Long solution_id , @RequestBody Comment comment , @PathVariable("user_id") Long user_id){
-////        solutionService.addCommentToSolution(solution_id ,comment ,user_id);
-////
-////        return ResponseEntity.ok("comment add to the solution successfully by the id " +user_id);
-////
-////    }
-//@PostMapping("/insertcomment/{solution_id}")
-//public ResponseEntity<String> addCommentToSolution(@PathVariable("solution_id") Long solution_id , @RequestBody Comment comment ){
-//    solutionService.addCommentToSolution(solution_id ,comment );
-//
-//    return ResponseEntity.ok("comment add to the solution successfully by the id " + solution_id);
-//
-//}
-//
-//
 
-//    @GetMapping("/getallsolution")
-//    public ResponseEntity<List<Solution>>  getAllSolution(){
-//        return ResponseEntity.ok(solutionService.getAllSolution());
-//    }
+    @GetMapping("{solution_id}/getsolutionbyid")
     public ResponseEntity<Solution> getSolutionById(@PathVariable Long solution_id){
         Solution solution = solutionService.getSolutionById(solution_id);
 
@@ -55,6 +28,44 @@ public class SolutionController {
         }
     }
 
+
+    @PostMapping("/{problem_id}/addsolution")
+    ResponseEntity<String> addSolution(@RequestBody Solution solution , @PathVariable(name = "problem_id" ) Long problem_id){
+       String res = solutionService.addSolution(solution  , problem_id);
+       return ResponseEntity.ok(res);
+
+    }
+    @PostMapping("/{solution_id}/{user_id}/addcomment")
+     ResponseEntity<String> addCommentToSolution(@RequestBody Comment comment , @PathVariable(name = "solution_id") Long solution_id , @PathVariable(name = "user_id") Long user_id){
+        String res = solutionService.addCommentToSolution(comment ,solution_id , user_id);
+        return  ResponseEntity.ok(res);
+     }
+     @GetMapping("/getallsolution")
+    ResponseEntity<List<Solution>> getAllSolution(){
+        List<Solution> res = solutionService.getAllSolution();
+        return ResponseEntity.ok(res);
+     }
+    @PostMapping("/{solution_id}/{user_id}/togglesolutionlike")
+     ResponseEntity<String> toggleLikeOnsolution( @PathVariable(name = "solution_id") Long solution_id , @PathVariable(name = "user_id") Long user_id){
+        String res = solutionService.toggleLikeOnSolution(solution_id,user_id);
+        return ResponseEntity.ok(res);
+    }
+    @GetMapping("/{solution_id}/{user_id}/checksolutionlike")
+    ResponseEntity<Boolean> checkSolutionLikeByUser(@PathVariable(name = "solution_id") Long solution_id , @PathVariable(name = "user_id") Long user_id){
+        Boolean res = solutionService.checkLikeOnSolutionByUser(solution_id , user_id);
+        return ResponseEntity.ok(res);
+    }
+
+    @PostMapping("/{comment_id}/{user_id}/togglecommentlike")
+    ResponseEntity<String> toggleLikeOnComment( @PathVariable(name = "comment_id") Long comment_id , @PathVariable(name = "user_id") Long user_id){
+        String res = solutionService.toggleLikeOnComment(comment_id,user_id);
+        return ResponseEntity.ok(res);
+    }
+    @GetMapping("/{comment_id}/{user_id}/checkcommentlike")
+    ResponseEntity<Boolean> checkCommentLikeByUser(@PathVariable(name = "comment_id") Long comment_id , @PathVariable(name = "user_id") Long user_id){
+        Boolean res = solutionService.checkLikeOnCommentByUser(comment_id , user_id);
+        return ResponseEntity.ok(res);
+    }
 
 
 }
