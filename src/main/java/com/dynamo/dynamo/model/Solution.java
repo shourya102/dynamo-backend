@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 public class Solution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,13 +23,20 @@ public class Solution {
     private String optimalExplanation;
 
     private String optimalCode;
+    private Integer likes;
+    private Integer dislikes;
 
-    private Long likes ;
-    @OneToOne
-    private Problem problem;
+//    @OneToOne
+//    private Problem problem;
+
+
     @OneToMany()
-    private List<Comment> commentList ;
+    private List<SolutionComment> commentList ;
 
+    public  Solution(){
+        likes =0;
+        dislikes =0;
+    }
 
 
 }

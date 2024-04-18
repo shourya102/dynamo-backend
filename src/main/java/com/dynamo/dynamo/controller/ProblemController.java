@@ -2,6 +2,7 @@ package com.dynamo.dynamo.controller;
 
 import com.dynamo.dynamo.model.Problem;
 import com.dynamo.dynamo.payload.request.ProblemRequest;
+import com.dynamo.dynamo.repository.ProblemRepository;
 import com.dynamo.dynamo.services.ProblemService;
 import jakarta.validation.Valid;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,8 @@ public class ProblemController {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ProblemController.class);
     @Autowired
     ProblemService problemService;
+    @Autowired
+    ProblemRepository problemRepository;
 
     @PostMapping("/create-problem")
     public ResponseEntity<?> createProblem(@Valid @RequestBody ProblemRequest problemRequest) {
@@ -55,6 +58,11 @@ public class ProblemController {
         String res = problemService.isLikeOrDisLikeOrNormal(problem_id );
         return ResponseEntity.ok(res);
 
+    }
+    @GetMapping("/{id}/get-problem")
+    ResponseEntity<Problem> getProblem(@PathVariable Long id){
+        Problem problem = problemRepository.findById(id).get();
+        return ResponseEntity.ok(problem);
     }
 
 }

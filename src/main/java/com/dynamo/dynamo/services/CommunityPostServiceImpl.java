@@ -188,7 +188,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
             communityPostComments.setLikes(communityPostComments.getLikes()-1);
             communityPostCommentLikeRepository.delete(islikes.get());
             communityPostCommentsRepository.save(communityPostComments);
-            return " remove like on Community Post id "+communityPostCommentId +" by user name " +userDetails.getUsername();
+            return " remove like on Community Post Comment id "+communityPostCommentId +" by user name " +userDetails.getUsername();
         }
         else if (islikes.isPresent() && islikes.get().getLikeStatus().equals(LikeStatus.DISLIKE)) {
             communityPostComments.setLikes(communityPostComments.getLikes()+1);
@@ -206,15 +206,15 @@ public class CommunityPostServiceImpl implements CommunityPostService {
             communityPostCommentLike.setLikeStatus(LikeStatus.LIKE);
             communityPostCommentLikeRepository.save(communityPostCommentLike);
         }
-        return "like on Community Post id "+communityPostCommentId +" by user name " +userDetails.getUsername();
+        return "like on Community Post Comment id "+communityPostCommentId +" by user name " +userDetails.getUsername();
 
     }
 
 
     public String toggleDislikeOnCommunityPostComments(Long communityPostCommentId) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        CommunityPostComments communityPostComments = communityPostCommentsRepository.findById(communityPostCommentId).orElseThrow(()->new RuntimeException("Community Post are not found" +communityPostCommentId));
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(()->new RuntimeException("user not found" +userDetails.getUsername()));
+        CommunityPostComments communityPostComments = communityPostCommentsRepository.findById(communityPostCommentId).orElseThrow(()->new RuntimeException("Community Post are not found" +communityPostCommentId));
 
         Optional<CommunityPostCommentLike> islikes = communityPostCommentLikeRepository.findByUserAndCommunityPostComments(user ,communityPostComments);
 
@@ -222,7 +222,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
             communityPostComments.setDislikes(communityPostComments.getDislikes()-1);
             communityPostCommentLikeRepository.delete(islikes.get());
             communityPostCommentsRepository.save(communityPostComments);
-            return "remove dislike on Community Post id "+communityPostCommentId +" by user name " +userDetails.getUsername();
+            return "remove dislike on Community Post Comment id "+communityPostCommentId +" by user name " +userDetails.getUsername();
 
         } else if (islikes.isPresent() && islikes.get().getLikeStatus().equals(LikeStatus.LIKE)) {
             communityPostComments.setLikes(communityPostComments.getLikes()-1);
@@ -239,7 +239,7 @@ public class CommunityPostServiceImpl implements CommunityPostService {
             communityPostCommentLike.setLikeStatus(LikeStatus.DISLIKE);
             communityPostCommentLikeRepository.save(communityPostCommentLike);
         }
-        return "Dislike on Community Post id "+communityPostCommentId +" by user name " +userDetails.getUsername();
+        return "Dislike on Community Post Comment id  "+communityPostCommentId +" by user name  " +userDetails.getUsername();
     }
 
 
@@ -257,6 +257,15 @@ public class CommunityPostServiceImpl implements CommunityPostService {
         communityPostCommentsRepository.delete(communityPostComments);
 
         return "delete Successfully !";
+    }
+
+    public List<CommunityPostComments> getCommunityPostComment(Long communityPostId){
+        CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElseThrow(()->new RuntimeException("Community Post are not found" +communityPostId));
+
+
+       return communityPostCommentsRepository.findByCommunityPost(communityPost);
+
+
     }
 
 

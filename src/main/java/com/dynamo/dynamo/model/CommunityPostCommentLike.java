@@ -14,7 +14,8 @@ import lombok.Setter;
 public class CommunityPostCommentLike extends Likes{
 
     @ManyToOne
-    @JoinColumn(name = "Community_id")
+    @JoinColumn(name = "CommunityComment_id")
     private CommunityPostComments communityPostComments;
+
 
 }

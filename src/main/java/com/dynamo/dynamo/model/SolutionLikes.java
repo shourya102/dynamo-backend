@@ -5,16 +5,12 @@ import lombok.Data;
 
 @Data
 @Entity
-public class SolutionLikes {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class SolutionLikes extends Likes {
+
 
     @ManyToOne
     @JoinColumn(name = "solution_id")
     private Solution solution;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
 }

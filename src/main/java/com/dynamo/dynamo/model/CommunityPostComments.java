@@ -15,7 +15,7 @@ public class CommunityPostComments extends Comments{
     @ManyToOne
     @JoinColumn(name = "Community_id")
     private CommunityPost communityPost;
-    private Integer likes;
-    private Integer dislikes;
+
+
 
 }

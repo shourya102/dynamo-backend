@@ -14,7 +14,8 @@ public abstract class Comments {
     //    @NotEmpty(message = "write a comment first ! please")
     private String comment;
 
-    private  Long likes = 0L;
+    private  Integer likes = 0;
+    private Integer dislikes = 0;
 
     @ManyToOne
     private User user;

@@ -14,8 +14,8 @@ public class CommunityPostTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String tag;
-    @ManyToMany(mappedBy = "communitTag" ,cascade = CascadeType.ALL  ,fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Set<CommunityPost> communities = new HashSet<>();
+//    @ManyToMany(mappedBy = "communitTag" ,cascade = CascadeType.ALL  ,fetch = FetchType.LAZY)
+//    @JsonBackReference
+//    private Set<CommunityPost> communities = new HashSet<>();
 
 }

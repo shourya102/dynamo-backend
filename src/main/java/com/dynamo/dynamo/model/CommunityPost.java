@@ -15,8 +15,8 @@ public class CommunityPost {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title ;
-    @ManyToMany( fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @ManyToMany()
+//    @JsonManagedReference
     private Set<CommunityPostTag> communitTag = new HashSet<>();
     private String description;
     private Integer likes;
