@@ -1,7 +1,7 @@
 package com.dynamo.dynamo.utils;
 
-import com.dynamo.dynamo.model.EType;
-import com.dynamo.dynamo.model.ProblemDetails;
+import com.dynamo.dynamo.model.problem.EType;
+import com.dynamo.dynamo.model.problem.ProblemDetails;
 
 import java.util.StringJoiner;
 

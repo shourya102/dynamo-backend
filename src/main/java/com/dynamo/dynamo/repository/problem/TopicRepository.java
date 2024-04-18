@@ -1,6 +1,6 @@
-package com.dynamo.dynamo.repository;
+package com.dynamo.dynamo.repository.problem;
 
-import com.dynamo.dynamo.model.Topic;
+import com.dynamo.dynamo.model.problem.Topic;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TopicRepository extends JpaRepository<Topic, Long> {

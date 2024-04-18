@@ -1,6 +1,6 @@
-package com.dynamo.dynamo.repository;
+package com.dynamo.dynamo.repository.user;
 
-import com.dynamo.dynamo.model.User;
+import com.dynamo.dynamo.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

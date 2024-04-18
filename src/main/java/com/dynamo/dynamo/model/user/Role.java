@@ -1,4 +1,4 @@
-package com.dynamo.dynamo.model;
+package com.dynamo.dynamo.model.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

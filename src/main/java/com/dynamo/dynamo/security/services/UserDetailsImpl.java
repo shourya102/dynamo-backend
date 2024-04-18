@@ -1,6 +1,6 @@
 package com.dynamo.dynamo.security.services;
 
-import com.dynamo.dynamo.model.User;
+import com.dynamo.dynamo.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,14 +18,16 @@ public class UserDetailsImpl implements UserDetails {
     private final String email;
     @JsonIgnore
     private final String password;
+    private final Boolean enabled;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password,
+    public UserDetailsImpl(Long id, String username, String email, String password, Boolean enabled,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.enabled = enabled;
         this.authorities = authorities;
     }
 
@@ -39,6 +41,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getEnabled(),
                 authorities);
     }
 
@@ -81,8 +84,9 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     @Override
+
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 
     @Override

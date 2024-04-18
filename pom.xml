@@ -11,6 +11,7 @@
     <groupId>com.dynamo</groupId>
     <artifactId>dynamo-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>Dynamo</name>
     <description>Dynamo</description>
     <properties>

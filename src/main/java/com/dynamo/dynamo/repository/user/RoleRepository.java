@@ -1,7 +1,7 @@
 package com.dynamo.dynamo.repository;
 
-import com.dynamo.dynamo.model.ERole;
-import com.dynamo.dynamo.model.Role;
+import com.dynamo.dynamo.model.user.ERole;
+import com.dynamo.dynamo.model.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.dynamo.dynamo.model;
+package com.dynamo.dynamo.model.problem;
 
 public enum EType {
     INTEGER,
