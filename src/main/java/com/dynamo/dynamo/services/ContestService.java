@@ -1,8 +1,8 @@
 package com.dynamo.dynamo.services;
 
 
-import com.dynamo.dynamo.model.Problem;
-import com.dynamo.dynamo.model.User;
+import com.dynamo.dynamo.model.problem.Problem;
+import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.payload.request.ContestRequest;
 import com.dynamo.dynamo.payload.response.ContestResponse;
 import com.dynamo.dynamo.repository.ContestRepository;

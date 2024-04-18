@@ -1,4 +1,4 @@
-package com.dynamo.dynamo.model;
+package com.dynamo.dynamo.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -44,6 +44,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+    private Boolean enabled;
 
 
     public User(String email, String username, String password) {

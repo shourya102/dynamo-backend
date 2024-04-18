@@ -1,9 +1,11 @@
 package com.dynamo.dynamo.services;
 
 import com.dynamo.dynamo.model.*;
+import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.payload.request.CommentsRequest;
 import com.dynamo.dynamo.payload.request.CommunityPostRequest;
 import com.dynamo.dynamo.repository.*;
+import com.dynamo.dynamo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

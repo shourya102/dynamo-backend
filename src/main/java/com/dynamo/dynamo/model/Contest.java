@@ -1,6 +1,8 @@
 package com.dynamo.dynamo.model;
 
 
+import com.dynamo.dynamo.model.problem.Problem;
+import com.dynamo.dynamo.model.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.dynamo.dynamo.services;
 
-import com.dynamo.dynamo.model.Problem;
+import com.dynamo.dynamo.model.problem.Problem;
 import com.dynamo.dynamo.model.Solution;
 import com.dynamo.dynamo.payload.request.CommentsRequest;
 import com.dynamo.dynamo.payload.request.SolutionRequest;

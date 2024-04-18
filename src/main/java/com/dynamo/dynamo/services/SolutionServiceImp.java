@@ -1,9 +1,13 @@
 package com.dynamo.dynamo.services;
 
 import com.dynamo.dynamo.model.*;
+import com.dynamo.dynamo.model.problem.Problem;
+import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.payload.request.CommentsRequest;
 import com.dynamo.dynamo.payload.request.SolutionRequest;
 import com.dynamo.dynamo.repository.*;
+import com.dynamo.dynamo.repository.problem.ProblemRepository;
+import com.dynamo.dynamo.repository.user.UserRepository;
 import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

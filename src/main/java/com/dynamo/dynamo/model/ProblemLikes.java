@@ -1,5 +1,6 @@
 package com.dynamo.dynamo.model;
 
+import com.dynamo.dynamo.model.problem.Problem;
 import jakarta.persistence.*;
 import lombok.Data;
 

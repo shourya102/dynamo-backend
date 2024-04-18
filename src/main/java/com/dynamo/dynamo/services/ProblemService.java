@@ -2,8 +2,14 @@ package com.dynamo.dynamo.services;
 
 import com.dynamo.dynamo.exceptions.EnumNotFoundException;
 import com.dynamo.dynamo.model.*;
+import com.dynamo.dynamo.model.problem.*;
+import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.payload.response.MessageResponse;
 import com.dynamo.dynamo.repository.*;
+import com.dynamo.dynamo.repository.problem.ProblemDetailsRepository;
+import com.dynamo.dynamo.repository.problem.ProblemRepository;
+import com.dynamo.dynamo.repository.problem.TopicRepository;
+import com.dynamo.dynamo.repository.user.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

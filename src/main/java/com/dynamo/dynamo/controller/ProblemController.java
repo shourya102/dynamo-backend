@@ -1,8 +1,8 @@
 package com.dynamo.dynamo.controller;
 
-import com.dynamo.dynamo.model.Problem;
+import com.dynamo.dynamo.model.problem.Problem;
 import com.dynamo.dynamo.payload.request.ProblemRequest;
-import com.dynamo.dynamo.repository.ProblemRepository;
+import com.dynamo.dynamo.repository.problem.ProblemRepository;
 import com.dynamo.dynamo.services.ProblemService;
 import jakarta.validation.Valid;
 import org.slf4j.LoggerFactory;

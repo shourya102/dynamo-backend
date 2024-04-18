@@ -1,5 +1,6 @@
-package com.dynamo.dynamo.model;
+package com.dynamo.dynamo.model.problem;
 
+import com.dynamo.dynamo.model.Solution;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -54,7 +55,7 @@ public class Problem {
     )
     private Set<Topic> topic;
 
-    @OneToOne(mappedBy = "problem")
+    @OneToOne()
     private Solution solution;
 
     public Problem(String name, Difficulty difficulty, Integer numberOfAttempts, Integer successfulAttempts, Integer likes, Integer dislikes) {
