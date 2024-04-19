@@ -13,12 +13,11 @@ public class ContestRequest {
 
     private List<String> problemType;
     private String password;
-    private int startingHour;
-    private int startingMin;
-    private int durationHour;
-    private int durationMin;
+    private String startingTime;
+    private String endingTime;
     private int  numberOfProblem;
     private int  numberOfParticipants;
+
 
 
 }

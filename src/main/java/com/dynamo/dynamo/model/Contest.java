@@ -27,19 +27,19 @@ public class Contest {
     private String password;
     private Date creationDate;
     private LocalTime creationTime;
-    private int startingHour;
-    private int startingMin;
-    private int durationHour;
-    private int durationMin;
+    private LocalTime startingTime;
+    private LocalTime endingTime;
     private int numberOfProblem;
+
     private int numberOfParticipants;
+    private int registerParticipants;
      @ManyToOne()
     private User contestCreater;
     @Enumerated(EnumType.STRING)
     private ContestStatus contestStatus;
 
- @OneToMany()
- private List<Problem> problemList;
+    @OneToMany()
+    private List<Problem> problemList;
 
 
     public static enum ContestStatus {

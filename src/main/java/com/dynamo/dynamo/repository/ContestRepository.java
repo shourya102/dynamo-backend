@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface ContestRepository extends JpaRepository<Contest , Long>  {
 
-//    Optional<Contest> findByKey(Long key);
+    Optional<Contest> findByContestId(Long contestId);
 }
