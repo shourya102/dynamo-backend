@@ -10,14 +10,11 @@ import java.util.List;
 @Setter
 @Getter
 public class ContestRequest {
-
     private List<String> problemType;
     private String password;
     private String startingTime;
     private String endingTime;
     private int  numberOfProblem;
     private int  numberOfParticipants;
-
-
 
 }

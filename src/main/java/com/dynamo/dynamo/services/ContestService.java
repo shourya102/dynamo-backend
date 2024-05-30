@@ -3,13 +3,16 @@ package com.dynamo.dynamo.services;
 
 import com.dynamo.dynamo.model.Contest;
 import com.dynamo.dynamo.model.Participant;
+import com.dynamo.dynamo.model.problem.Difficulty;
 import com.dynamo.dynamo.model.problem.Problem;
+import com.dynamo.dynamo.model.problem.Topic;
 import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.payload.request.ContestRequest;
 import com.dynamo.dynamo.payload.response.ContestResponse;
 import com.dynamo.dynamo.repository.ContestRepository;
 import com.dynamo.dynamo.repository.ParticipantRepository;
 import com.dynamo.dynamo.repository.problem.ProblemRepository;
+import com.dynamo.dynamo.repository.problem.TopicRepository;
 import com.dynamo.dynamo.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,6 +24,7 @@ import com.dynamo.dynamo.model.Contest.ContestStatus;
 
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ContestService {
@@ -35,6 +39,9 @@ public class ContestService {
     ProblemRepository problemRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    TopicRepository topicRepository;
+
 
 public String createContest(ContestRequest contestRequest){
     UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -43,7 +50,6 @@ public String createContest(ContestRequest contestRequest){
     LocalTime contestTime = LocalTime.parse(contestRequest.getStartingTime());
     LocalTime contestEnding = LocalTime.parse(contestRequest.getEndingTime());
     Contest contest = new Contest();
-
     if(now.isBefore(contestTime))return "Contest not create in past";
     now.plusMinutes(5);
     if (contestTime.isBefore(now))return " contest must start after 5 min !" ;
@@ -51,7 +57,6 @@ public String createContest(ContestRequest contestRequest){
     contest.setStartingTime(contestTime);
     contestTime.plusMinutes(20);
     if(contestTime.isBefore(contestEnding))return "Contest Duration Must more than 20 min";
-
 
     contest.setNumberOfParticipants(contestRequest.getNumberOfParticipants());
     contest.setNumberOfProblem(contestRequest.getNumberOfProblem());
@@ -67,8 +72,41 @@ public String createContest(ContestRequest contestRequest){
 
     List<String> problemType = contestRequest.getProblemType();
     Set<Problem> problemList = new HashSet<>();
-    for(int i=0; i<problemType.size(); i++){
+//    for(int i=0; i<contestRequest.getNumberOfProblem(); i++){
+//
+//        for (int j=0; j<contestRequest.getProblemType().size(); j++){
+//            String topic = problemType.get(j++);
+//            String difficulty  = problemType.get(j);
+//            Problem problem = new Problem();
+//            problemList.add(problem);
+//            i+=2;
+//        }
+//
+//    }
 
+
+
+    int s = contestRequest.getNumberOfProblem()- contestRequest.getNumberOfProblem()%((int) problemType.size()/2);
+    for(int i=0; i<s; i++){
+        for (int j=0; j<problemType.size(); j++){
+            String topic = problemType.get(j++);
+            String difficulty  = problemType.get(j);
+            Topic topic1 = topicRepository.findByName(topic);
+           List<Problem> problem = problemRepository.findByDifficultyAndTopic(getEnumOFDeifficulty(difficulty) , topic1);
+           problemList.add(problem.get((int) Math.abs(Math.random()*problem.size() -1)));
+        }
+        i+=2;
+    }
+
+    System.out.println(problemList.size());
+
+    int rem = contestRequest.getNumberOfProblem() % ((int) problemType.size()/2);
+    for (int j =0; j<rem*2; j++){
+        String topic = problemType.get(j++);
+        String difficulty  = problemType.get(j);
+        Topic topic1 = topicRepository.findByName(topic);
+        List<Problem> problem = problemRepository.findByDifficultyAndTopic(getEnumOFDeifficulty(difficulty) , topic1);
+        problemList.add(problem.get((int) Math.abs(Math.random()*problem.size() -1)));
     }
 
 
@@ -83,6 +121,17 @@ public String createContest(ContestRequest contestRequest){
     return "create contest Successfully !" ;
 }
 
+Difficulty getEnumOFDeifficulty(String dif){
+    dif = dif.toUpperCase();
+    if(dif.equals("EASY")){
+        return Difficulty.EASY;
+    }
+    else if(dif.equals("MEDIUM")){
+       return  Difficulty.MEDIUM;
+    }else {
+        return Difficulty.HARD;
+    }
+}
 
 @Scheduled(fixedRate = 60000)
 public void updateContestStatus(){
@@ -120,11 +169,13 @@ if(contest.isPresent()) {
     if (contest.get().getContestStatus() == ContestStatus.UPCOMING) {
         if (contest.get().getNumberOfParticipants() > contest.get().getRegisterParticipants()){
             contest.get().setRegisterParticipants(contest.get().getRegisterParticipants()+1);
+            contest.get().getRegisteredUser().add(user);
             Contest contest1 = contestRepository.save(contest.get());
             Participant participant = new Participant();
             participant.setUser(user);
             participant.setContest(contest1);
             participantRepository.save(participant);
+
             return "Successfully Register !";
 
         }
@@ -139,11 +190,12 @@ if(contest.isPresent()) {
 
 public ContestResponse joining(Long key , String password){
 
+
     Optional<Contest> contest = contestRepository.findByContestId(key);
     if(passwordEncoder.matches(password , contest.get().getPassword())){
         ContestResponse contestResponse = new ContestResponse();
         contestResponse.setName(contest.get().getName());
-        contestResponse.setContestCreater(contest.get().getContestCreater());
+
         contestResponse.setContestStatus(contest.get().getContestStatus());
         contestResponse.setCreationTime(contest.get().getCreationTime());
         contestResponse.setCreationDate(contest.get().getCreationDate());
@@ -151,6 +203,8 @@ public ContestResponse joining(Long key , String password){
         contestResponse.setRegisterParticipants(contest.get().getRegisterParticipants());
         contestResponse.setNumberOfParticipants(contest.get().getNumberOfParticipants());
         contestResponse.setNumberOfProblem(contest.get().getNumberOfProblem());
+        contestResponse.setContestCreater(contest.get().getContestCreater().getUsername());
+        contestResponse.setParticipantsName(contest.get().getRegisteredUser().stream().map((user ->user.getUsername() )).collect(Collectors.toList()));
         return contestResponse;
     }
 

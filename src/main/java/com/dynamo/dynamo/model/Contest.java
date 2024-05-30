@@ -30,7 +30,6 @@ public class Contest {
     private LocalTime startingTime;
     private LocalTime endingTime;
     private int numberOfProblem;
-
     private int numberOfParticipants;
     private int registerParticipants;
      @ManyToOne()
@@ -41,6 +40,8 @@ public class Contest {
     @OneToMany()
     private List<Problem> problemList;
 
+    @OneToMany()
+    private List<User>  registeredUser;
 
     public static enum ContestStatus {
 

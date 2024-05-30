@@ -20,12 +20,12 @@ public class ContestResponse {
     private String name;
     private Date creationDate;
     private LocalTime creationTime;
-    private int numberOfProblem;
+    private Integer numberOfProblem;
 
-    private int numberOfParticipants;
-    private int registerParticipants;
-    @ManyToOne()
-    private User contestCreater;
+    private Integer numberOfParticipants;
+    private Integer registerParticipants;
+    private List<String> ParticipantsName;
+    private String contestCreater;
     @Enumerated(EnumType.STRING)
     private Contest.ContestStatus contestStatus;
 
