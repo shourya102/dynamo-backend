@@ -4,17 +4,18 @@ import com.dynamo.dynamo.model.*;
 import com.dynamo.dynamo.model.user.User;
 import com.dynamo.dynamo.payload.request.CommentsRequest;
 import com.dynamo.dynamo.payload.request.CommunityPostRequest;
+import com.dynamo.dynamo.payload.response.CommunityPostCommentResponse;
+import com.dynamo.dynamo.payload.response.CommunityPostResponse;
+import com.dynamo.dynamo.payload.response.CommunityPostsListResponse;
 import com.dynamo.dynamo.repository.*;
 import com.dynamo.dynamo.repository.user.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CommunityPostServiceImpl implements CommunityPostService {
@@ -30,6 +31,8 @@ public class CommunityPostServiceImpl implements CommunityPostService {
     CommunityPostCommentsRepository communityPostCommentsRepository;
     @Autowired
     CommunityPostCommentLikeRepository communityPostCommentLikeRepository;
+    @Autowired
+    ModelMapper modelMapper ;
     @Override
     public CommunityPost addDiscussion(CommunityPostRequest communityPostRequest) {
         CommunityPost communityPost = new CommunityPost();
@@ -61,6 +64,8 @@ public class CommunityPostServiceImpl implements CommunityPostService {
 
     @Override
     public List<CommunityPost> getAllDiscussion() {
+
+
         return communityPostRepository.findAll();
     }
 
@@ -261,13 +266,61 @@ public class CommunityPostServiceImpl implements CommunityPostService {
         return "delete Successfully !";
     }
 
-    public List<CommunityPostComments> getCommunityPostComment(Long communityPostId){
+    public List<CommunityPostCommentResponse> getCommunityPostComment(Long communityPostId){
         CommunityPost communityPost = communityPostRepository.findById(communityPostId).orElseThrow(()->new RuntimeException("Community Post are not found" +communityPostId));
 
 
-       return communityPostCommentsRepository.findByCommunityPost(communityPost);
+        List<CommunityPostComments>  list = communityPostCommentsRepository.findByCommunityPost(communityPost);
+        List<CommunityPostCommentResponse> res = new ArrayList<>();
+        for (CommunityPostComments cp : list){
+            CommunityPostCommentResponse communityPostCommentResponse = this.modelMapper.map(cp , CommunityPostCommentResponse.class);
+            communityPostCommentResponse.setUsername(cp.getUser().getUsername());
+            res.add(communityPostCommentResponse);
+        }
+
+        return res;
+
+    }
+
+    public List<CommunityPostsListResponse> getAllCommunityPost(){
+        List<CommunityPost> communityPostList = communityPostRepository.findAll();
+        List<CommunityPostsListResponse> res = new ArrayList<>();
+        for (CommunityPost cp : communityPostList){
+            CommunityPostsListResponse communityPostsListResponse = this.modelMapper.map(cp, CommunityPostsListResponse.class);
+            communityPostsListResponse.setTags(getAllTagOfCommunityPost(cp.getCommunitTag()));
+            res.add(communityPostsListResponse);
+
+        }
 
 
+        return res;
+
+    }
+
+    public Set<String> getAllTagOfCommunityPost(Set<CommunityPostTag> ls){
+        Set<String>  res = new HashSet<>();
+        for (CommunityPostTag cpt : ls){
+            res.add(cpt.getTag());
+        }
+        return res;
+    }
+    public Set<String> getAllCommunityTag(){
+        Set<String> res = new HashSet<>();
+       List< CommunityPostTag > communityPostTag = communityTagRepository.findAll();
+       for (CommunityPostTag cpt : communityPostTag){
+           res.add(cpt.getTag());
+
+       }
+
+
+        return res;
+    }
+
+    public  CommunityPostResponse getCommunityPostById(Long id){
+        CommunityPostResponse communityPostResponse =  this.modelMapper.map( communityPostRepository.findById(id) , CommunityPostResponse.class);
+        communityPostResponse.setTags(getAllTagOfCommunityPost(communityPostRepository.findById(id).get().getCommunitTag()));
+
+        return communityPostResponse;
     }
 
 
