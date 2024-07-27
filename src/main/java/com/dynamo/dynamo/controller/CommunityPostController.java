@@ -6,6 +6,9 @@ import com.dynamo.dynamo.model.CommunityPostTag;
 import com.dynamo.dynamo.model.SolutionComment;
 import com.dynamo.dynamo.payload.request.CommentsRequest;
 import com.dynamo.dynamo.payload.request.CommunityPostRequest;
+import com.dynamo.dynamo.payload.response.CommunityPostCommentResponse;
+import com.dynamo.dynamo.payload.response.CommunityPostResponse;
+import com.dynamo.dynamo.payload.response.CommunityPostsListResponse;
 import com.dynamo.dynamo.repository.CommunityPostTagRepository;
 import com.dynamo.dynamo.services.CommunityPostService;
 import com.dynamo.dynamo.services.CommunityPostServiceImpl;
@@ -34,13 +37,13 @@ public class CommunityPostController {
         return  ResponseEntity.ok(communityPost);
     }
     @GetMapping("/{id}/getdiscussionbyid")
-    ResponseEntity<CommunityPost> getDiscussionById(@PathVariable(name = "id") Long id){
-        CommunityPost communityPost = communityPostService.getDiscussionBYId(id);
-        return  ResponseEntity.ok(communityPost);
+    ResponseEntity<CommunityPostResponse> getDiscussionById(@PathVariable(name = "id") Long id){
+        CommunityPostResponse communityPostResponse = communityPostServiceImpl.getCommunityPostById(id);
+        return  ResponseEntity.ok(communityPostResponse);
     }
     @GetMapping("/getalldiscussion")
-    ResponseEntity<List<CommunityPost>> getAllDiscussions(){
-        List<CommunityPost> communityPostList = communityPostService.getAllDiscussion();
+    ResponseEntity<List<CommunityPostsListResponse>> getAllDiscussions(){
+        List<CommunityPostsListResponse> communityPostList = communityPostServiceImpl.getAllCommunityPost();
         return  ResponseEntity.ok(communityPostList);
     }
     @PostMapping("/{community_id}/likeoncommunitypost")
@@ -88,8 +91,8 @@ public class CommunityPostController {
         return ResponseEntity.ok( communityPostServiceImpl.toggleDislikeOnCommunityPostComments(id)) ;
     }
 
-    @GetMapping("/{id}/get-comments-byproblen")
-    ResponseEntity<List<CommunityPostComments>> getAllCommentByProblem(@PathVariable() Long id){
+    @GetMapping("/{id}/get-comments-by-communityPostId")
+    ResponseEntity<List<CommunityPostCommentResponse>> getAllCommentByProblem(@PathVariable() Long id){
         return ResponseEntity.ok(communityPostServiceImpl.getCommunityPostComment(id));
     }
 }
