@@ -4,12 +4,15 @@ import com.dynamo.dynamo.exceptions.EnumNotFoundException;
 import com.dynamo.dynamo.model.*;
 import com.dynamo.dynamo.model.problem.*;
 import com.dynamo.dynamo.model.user.User;
+import com.dynamo.dynamo.payload.request.SubmitRequest;
 import com.dynamo.dynamo.payload.response.MessageResponse;
+import com.dynamo.dynamo.payload.response.ProblemResponse;
 import com.dynamo.dynamo.repository.*;
 import com.dynamo.dynamo.repository.problem.ProblemDetailsRepository;
 import com.dynamo.dynamo.repository.problem.ProblemRepository;
 import com.dynamo.dynamo.repository.problem.TopicRepository;
 import com.dynamo.dynamo.repository.user.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Service
 public class ProblemService {
@@ -37,9 +46,16 @@ public class ProblemService {
     UserRepository userRepository;
     @Autowired
     ProblemLikesRepository problemLikesRepository;
+    @Autowired
+    JavaCodeTesterService javaCodeTesterService;
+    ModelMapper modelMapper = new ModelMapper();
+
+    private static final String TEMP_DIR = System.getProperty("user.dir") + "/src/main/java/com/dynamo/dynamo/temp";
+
 
     public ResponseEntity<?> saveProblem(String name, String difficulty, String problemDescription, String returnType,
-                                         String methodName, List<String> parameterNames, List<String> parameterTypes, Set<String> topics) {
+                                         String methodName, List<String> parameterNames, List<String> parameterTypes, Set<String> topics,
+                                         List<String> inputList, List<String> outputList, String testCode) {
         if (problemRepository.existsByName(name))
             return ResponseEntity.badRequest().body(new MessageResponse("Name is already taken"));
         if (!Difficulty.contains(difficulty))
@@ -59,6 +75,13 @@ public class ProblemService {
             parameter.setProblemDetails(details);
             parameterList.add(parameter);
         }
+        List<TestCase> testCases = new ArrayList<>();
+        IntStream.range(0, inputList.size()).forEach(i -> {
+            TestCase testCase = new TestCase(inputList.get(i), outputList.get(i), details);
+            testCases.add(testCase);
+        });
+        details.setTestCases(testCases);
+        details.setTestCode(testCode);
         details.setParameters(parameterList);
         problem.setProblemDetails(details);
         Set<Topic> topicSet = new HashSet<>();
@@ -75,6 +98,28 @@ public class ProblemService {
         problem.setTopic(topicSet);
         problemRepository.save(problem);
         return ResponseEntity.ok(new MessageResponse("Problem has been saved successfully!"));
+    }
+
+    public List<Boolean> getResults(SubmitRequest submitRequest) {
+        ProblemDetails problemDetails = problemDetailsRepository.findByProblemId(submitRequest.getProblemId()).get();
+        List<String> paramTypes = problemDetails.getParameters().stream().map(i -> i.getType().name()).toList();
+        List<TestCase> testCases = problemDetails.getTestCases();
+        List<Boolean> resultList = new ArrayList<>();
+        try {
+            Path tempDirPath = Paths.get(TEMP_DIR);
+            Path tempFile = Files.createTempFile(tempDirPath, "Tester", ".java");
+            try(FileWriter writer = new FileWriter(tempFile.toFile())) {
+                writer.write(submitRequest.getCode());
+            }
+            testCases.forEach(testCase -> {
+                resultList.add(javaCodeTesterService.getResult(testCase.getInputs(), testCase.getOutput(), tempFile, paramTypes));
+            });
+            Files.delete(tempFile);
+        }
+       catch (Exception e) {
+            logger.error(e.toString());
+       }
+        return  resultList;
     }
 
     public ResponseEntity<?> generateCodeSkeleton() {
@@ -158,7 +203,9 @@ public class ProblemService {
         return "NORMAL";
     }
 
-    public List<Problem> getAllProblems() {
-        return problemRepository.findAll();
+    public List<ProblemResponse> getAllProblems() {
+        List<Problem> problems = problemRepository.findAll();
+        List<ProblemResponse> problemResponses  = problems.stream().map(i -> modelMapper.map(i, ProblemResponse.class)).toList();
+        return problemResponses;
     }
 }

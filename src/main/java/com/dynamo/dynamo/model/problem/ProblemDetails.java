@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,7 +35,10 @@ public class ProblemDetails {
 
     @OneToMany(mappedBy = "problemDetails", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Parameter> parameters;
-
+    @OneToMany(mappedBy = "problemDetails", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<TestCase> testCases = new ArrayList<>();
+    @NotBlank
+    private String testCode;
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")

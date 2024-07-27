@@ -1,9 +1,7 @@
 package com.dynamo.dynamo.model.user;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,6 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@Builder
 public class UserProfile {
 
     public static enum Gender {
@@ -26,12 +26,18 @@ public class UserProfile {
     private Date dateOfBirth;
     private Gender gender;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_socials", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "socials_id"))
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "userProfile")
     private List<Social> socials;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;
+
+    public UserProfile(String firstName, String lastName, Date dateOfBirth, Gender gender) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+    }
 }

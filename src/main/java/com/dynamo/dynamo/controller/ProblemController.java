@@ -2,9 +2,11 @@ package com.dynamo.dynamo.controller;
 
 import com.dynamo.dynamo.model.problem.Problem;
 import com.dynamo.dynamo.payload.request.ProblemRequest;
+import com.dynamo.dynamo.payload.response.ProblemResponse;
 import com.dynamo.dynamo.repository.problem.ProblemRepository;
 import com.dynamo.dynamo.services.ProblemService;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ public class ProblemController {
     ProblemService problemService;
     @Autowired
     ProblemRepository problemRepository;
+    ModelMapper modelMapper = new ModelMapper();
 
     @PostMapping("/create-problem")
     public ResponseEntity<?> createProblem(@Valid @RequestBody ProblemRequest problemRequest) {
@@ -32,11 +35,14 @@ public class ProblemController {
                 problemRequest.getMethodName(),
                 problemRequest.getParameterNames(),
                 problemRequest.getParameterTypes(),
-                problemRequest.getTopics());
+                problemRequest.getTopics(),
+                problemRequest.getInputList(),
+                problemRequest.getOutputList(),
+                problemRequest.getTestCode());
     }
     @GetMapping("/getallproblem")
-    public ResponseEntity<List<Problem>> getAllproblem(){
-        List<Problem> res = problemService.getAllProblems();
+    public ResponseEntity<?> getAllproblem(){
+            List<ProblemResponse> res = problemService.getAllProblems();
         return ResponseEntity.ok(res);
     }
 
@@ -59,10 +65,12 @@ public class ProblemController {
         return ResponseEntity.ok(res);
 
     }
-    @GetMapping("/{id}/get-problem")
-    ResponseEntity<Problem> getProblem(@PathVariable Long id){
+    @GetMapping("/get-problem/{id}")
+    ResponseEntity<?> getProblem(@PathVariable Long id){
         Problem problem = problemRepository.findById(id).get();
-        return ResponseEntity.ok(problem);
+        ProblemResponse problemResponse = modelMapper.map(problem, ProblemResponse.class);
+        problemResponse.setDescription(problem.getProblemDetails().getDescription());
+        return ResponseEntity.ok(problemResponse);
     }
 
 }

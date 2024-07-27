@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -54,7 +56,6 @@ public class Problem {
             inverseJoinColumns = @JoinColumn(name = "topic_id")
     )
     private Set<Topic> topic;
-
     @OneToOne()
     private Solution solution;
 
